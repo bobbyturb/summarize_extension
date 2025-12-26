@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI翻译与总结助手",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "使用AI自动翻译和总结网页内容",
 
   "permissions": [
