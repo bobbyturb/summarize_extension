@@ -1,0 +1,21 @@
+/* Content Script CSS - 用于页面内注入的UI元素 */
+
+/* 可以在这里添加翻译浮动按钮、tooltip等样式 */
+
+/* 示例：翻译按钮样式（如果需要在页面上显示翻译按钮） */
+.ai-translate-btn {
+  position: absolute;
+  padding: 4px 8px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 10000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.ai-translate-btn:hover {
+  background: #1565c0;
+}

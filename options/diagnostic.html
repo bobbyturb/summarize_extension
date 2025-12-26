@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>诊断工具 - AI助手</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 32px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 32px;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .info-box {
+      padding: 16px;
+      background: #f9f9f9;
+      border-left: 4px solid #1976d2;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .info-box.error {
+      background: #fff3cd;
+      border-left-color: #ffc107;
+    }
+
+    .info-box.success {
+      background: #d4edda;
+      border-left-color: #28a745;
+    }
+
+    .config-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+
+    .config-table th,
+    .config-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .config-table th {
+      background: #f5f5f5;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .config-table td {
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: #1976d2;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1565c0;
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #666;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 4px;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      display: block;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      display: block;
+    }
+
+    .status.loading {
+      background: #fff3cd;
+      color: #856404;
+      display: block;
+    }
+
+    .log-output {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 16px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .help-text {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge.success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .badge.warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>诊断工具</h1>
+    <p class="subtitle">检查插件配置和连接状态</p>
+
+    <!-- 当前配置 -->
+    <div class="section">
+      <h2 class="section-title">当前配置</h2>
+      <table class="config-table" id="configTable">
+        <thead>
+          <tr>
+            <th>配置项</th>
+            <th>值</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody id="configBody">
+          <tr>
+            <td colspan="3" style="text-align: center; color: #999;">加载中...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 测试操作 -->
+    <div class="section">
+      <h2 class="section-title">测试操作</h2>
+      <button id="testConnection" class="btn btn-primary">测试 AI 连接</button>
+      <button id="checkStorage" class="btn btn-secondary">检查存储</button>
+      <button id="viewLogs" class="btn btn-secondary">查看后台日志</button>
+      <button id="clearConfig" class="btn btn-secondary">清除配置</button>
+
+      <div id="status" class="status"></div>
+    </div>
+
+    <!-- 诊断结果 -->
+    <div class="section">
+      <h2 class="section-title">诊断结果</h2>
+      <div id="diagnosticResult" class="log-output">等待执行诊断操作...</div>
+    </div>
+
+    <!-- 帮助信息 -->
+    <div class="section">
+      <div class="info-box">
+        <strong>💡 查看详细日志:</strong>
+        <p class="help-text">
+          1. 访问 <code>chrome://extensions/</code><br>
+          2. 找到 "AI翻译与总结助手"<br>
+          3. 点击 "service worker" 链接<br>
+          4. 在控制台中查看详细日志
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="diagnostic.js"></script>
+</body>
+</html>
